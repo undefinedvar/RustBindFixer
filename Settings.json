@@ -1,0 +1,11 @@
+{
+  "KeysConfigPath": "D:\\Games\\SteamLibrary\\steamapps\\common\\Rust\\cfg\\keys.cfg",
+  "LaunchParameters": "-high -malloc=system -nolog",
+  "Servers": [
+    {
+      "Description": null,
+      "Ip": "54.37.161.177:28015",
+      "Name": "Blueberry - MODDED 10X no bp.wb"
+    }
+  ]
+}
