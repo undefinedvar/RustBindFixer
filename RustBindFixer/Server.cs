@@ -9,6 +9,8 @@ namespace RustBindFixer
         public string Ip { get; set; }
         public string Name { get; set; }
 
+        public bool PresentInServerList { get; set; } = true;
+
         public void Connect ( )
         {
             if ( string.IsNullOrEmpty ( Ip ) )

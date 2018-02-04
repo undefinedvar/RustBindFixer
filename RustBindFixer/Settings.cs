@@ -4,45 +4,57 @@ using Newtonsoft.Json;
 
 namespace RustBindFixer
 {
-	public class Settings
-	{
-		private static readonly object LoadLock;
+    public class Settings
+    {
+        private const string SETTINGSFILE = "Settings.json";
+        private static readonly object LoadLock;
 
-		public static Settings Instance { get; private set; }
+        public static Settings Instance { get; private set; }
 
-		private const string SETTINGSFILE = "Settings.json";
+        static Settings ( )
+        {
+            LoadLock = new object ( );
+            Instance = new Settings ( );
+            Load ( );
+            Save ( );
+        }
 
-		#region Properties
+        public static void Save ( )
+        {
+            lock ( LoadLock )
+                File.WriteAllText ( SETTINGSFILE, JsonConvert.SerializeObject ( Instance, Formatting.Indented ) );
+        }
 
-		public string KeysConfigPath { get; set; }
+        public static void Load ( )
+        {
+            lock ( LoadLock )
+            {
+                if ( File.Exists ( SETTINGSFILE ) )
+                {
+                    var settings = new JsonSerializerSettings {ObjectCreationHandling = ObjectCreationHandling.Replace};
+                    Instance = JsonConvert.DeserializeObject<Settings> ( File.ReadAllText ( SETTINGSFILE ), settings );
+                }
+            }
+        }
 
-        public string LaunchParameters { get; set; }
+        #region Properties
 
-        public List<Server> Servers { get; set; }
+        public string KeysConfigPath { get; set; } =
+            "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Rust\\cfg\\keys.cfg";
 
-		#endregion Properties
+        public string LaunchParameters { get; set; } = "-high -malloc=system -nolog";
 
-		static Settings ( )
-		{
-			LoadLock = new object ( );
-			Instance = new Settings ( );
-			Load ( );
-			Save ( );
-		}
+        public List<Server> Servers { get; set; } = new List<Server>
+        {
+            new Server
+            {
+                Name = "Example name",
+                Ip = "xxx.xxx.xxx.xxx:00000",
+                Description = "Example description",
+                PresentInServerList = false
+            }
+        };
 
-		public static void Save ( )
-		{
-			lock ( LoadLock )
-				File.WriteAllText ( SETTINGSFILE, JsonConvert.SerializeObject ( Instance, Newtonsoft.Json.Formatting.Indented ) );
-		}
-
-		public static void Load ( )
-		{
-			lock ( LoadLock )
-			{
-				if ( File.Exists ( SETTINGSFILE ) )
-					Instance = JsonConvert.DeserializeObject<Settings> ( File.ReadAllText ( SETTINGSFILE ) );
-			}
-		}
-	}
+        #endregion Properties
+    }
 }

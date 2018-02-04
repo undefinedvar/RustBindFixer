@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 
@@ -11,13 +12,13 @@ namespace RustBindFixer
     {
         private static void Main ( string[] args )
         {
-            var servers = Settings.Instance.Servers;
+            var servers = Settings.Instance.Servers.Where ( x => x.PresentInServerList ).ToList ( );
 
-            for ( var i = 0; i < servers.Count; ++i ) 
-                Console.WriteLine ( $"[{(i + 1)}] - {servers[i]}" );
+            for ( var i = 0; i < servers.Count; ++i ) Console.WriteLine ( $"[{i + 1}] - {servers[i]}" );
 
-            Console.Write ( $"\nConnect to server [1 - { servers.Count }]: " );
+            Console.Write ( $"\nConnect to server [1 - {servers.Count}]: " );
             var selectedServer = Convert.ToInt32 ( Console.ReadLine ( ) );
+
             if ( selectedServer >= 0 && selectedServer <= servers.Count )
                 servers[selectedServer - 1].Connect ( );
 
